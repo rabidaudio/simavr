@@ -500,13 +500,20 @@ gdb_handle_command(
 		{
 			if (strncmp(cmd, "FlashErase", 10) == 0) {
 				uint32_t addr, len;
+				uint8_t * src = NULL;
 				sscanf(cmd, "%*[^:]:%x,%x", &addr, &len);
-				gdb_send_reply(g, "OK");
+				if (addr < avr->flashend) {
+					src = avr->flash + addr;
+					memset(src, 0x00, len);
+					printf("%x,%x\n", addr, len); //Remove
+					gdb_send_reply(g, "OK");
+				}
 
 				break;
 			} else if (strncmp(cmd, "FlashWrite", 10) == 0) {
 				uint32_t addr;
 				sscanf(cmd, "%*[^:]:%x", &addr);
+				printf("%x\n", addr); //Remove
 				gdb_send_reply(g, "OK");
 				
 				break;
