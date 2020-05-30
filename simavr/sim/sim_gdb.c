@@ -504,7 +504,7 @@ gdb_handle_command(
 				sscanf(cmd, "%*[^:]:%x,%x", &addr, &len);
 				if (addr < avr->flashend) {
 					src = avr->flash + addr;
-					memset(src, 0x00, len);
+					memset(src, 0xff, len);
 					printf("%x,%x\n", addr, len); //Remove
 					gdb_send_reply(g, "OK");
 				}
@@ -518,7 +518,7 @@ gdb_handle_command(
 				
 				break;
 			} else if (strncmp(cmd, "FlashDone", 9) == 0) {
-				/* No response is required */
+				gdb_send_reply(g, "OK");
 				break;
 			}
 
