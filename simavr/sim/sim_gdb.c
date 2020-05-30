@@ -496,6 +496,27 @@ gdb_handle_command(
 					break;
 			}
 		}	break;
+		case 'v':
+		{
+			if (strncmp(cmd, "FlashErase", 10) == 0) {
+				uint32_t addr, len;
+				sscanf(cmd, "%*[^:]:%x,%x", &addr, &len);
+				gdb_send_reply(g, "OK");
+
+				break;
+			} else if (strncmp(cmd, "FlashWrite", 10) == 0) {
+				uint32_t addr;
+				sscanf(cmd, "%*[^:]:%x", &addr);
+				gdb_send_reply(g, "OK");
+				
+				break;
+			} else if (strncmp(cmd, "FlashDone", 9) == 0) {
+				/* No response is required */
+				break;
+			}
+
+			gdb_send_reply(g, "");
+		} break;
 		default:
 			gdb_send_reply(g, "");
 			break;
