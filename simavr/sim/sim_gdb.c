@@ -521,6 +521,34 @@ gdb_handle_command(
 			avr->state = cpu_Done;
 			gdb_send_reply(g, "OK");
 		}	break;
+		case 'v':
+		{
+			if (strncmp(cmd, "FlashErase", 10) == 0) {
+				uint32_t addr, len;
+				uint8_t * src = NULL;
+				sscanf(cmd, "%*[^:]:%x,%x", &addr, &len);
+				if (addr < avr->flashend) {
+					src = avr->flash + addr;
+					memset(src, 0xff, len);
+					// printf("%x,%x\n", addr, len); //Remove
+					gdb_send_reply(g, "OK");
+				}
+
+				break;
+			} else if (strncmp(cmd, "FlashWrite", 10) == 0) {
+				uint32_t addr;
+				sscanf(cmd, "%*[^:]:%x", &addr);
+				// printf("%x\n", addr); //Remove
+				gdb_send_reply(g, "OK");
+				
+				break;
+			} else if (strncmp(cmd, "FlashDone", 9) == 0) {
+				gdb_send_reply(g, "OK");
+				break;
+			}
+
+			gdb_send_reply(g, "");
+		} break;
 		default:
 			gdb_send_reply(g, "");
 			break;
